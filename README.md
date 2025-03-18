@@ -1,4 +1,4 @@
-# GBC074 - Sistemas Distribuídos - 2024-3
+# GBC074 - Sistemas Distribuídos - 2024-2
 
 Projeto de um sistema de armazenamento do tipo chave-valor (KVS - _Key-Value Store_).
 
