@@ -19,4 +19,4 @@ Projeto de um sistema de armazenamento do tipo chave-valor (KVS - _Key-Value Sto
 ## Testes
 
 * Os casos de teste assumem 3 servidores aceitando conexões nas portas 9000, 9001 e 9002
-* Em breve serão disponibilizados mais detalhes sobre os testes
+* Execute os testes em ordem crescente para obter os resultados esperados

@@ -195,6 +195,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             s
         }
     };
-    println!("Reply = {}", reply);
+    println!("Reply = {}\n", reply);
     Ok(())
 }
