@@ -61,8 +61,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Operation::Consulta => {
             assert!(key.len() == 1, "Informe uma chave!");
             let cv = ChaveVersao {
-                chave: key.get(0).unwrap().to_string(),
-                versao: ver.get(0).copied(),
+                chave: key.first().unwrap().to_string(),
+                versao: ver.first().copied(),
             };
             format!(
                 "{:?}",
@@ -77,8 +77,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             assert!(key.len() == 1, "Informe uma chave!");
             assert!(val.len() == 1, "Informe um valor!");
             let kv = ChaveValor {
-                chave: key.get(0).unwrap().to_string(),
-                valor: val.get(0).unwrap().to_string(),
+                chave: key.first().unwrap().to_string(),
+                valor: val.first().unwrap().to_string(),
             };
             format!(
                 "{:?}",
@@ -88,8 +88,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Operation::Remove => {
             assert!(key.len() == 1, "Informe uma chave!");
             let cv = ChaveVersao {
-                chave: key.get(0).unwrap().to_string(),
-                versao: ver.get(0).copied(),
+                chave: key.first().unwrap().to_string(),
+                versao: ver.first().copied(),
             };
             format!(
                 "{:?}",
@@ -97,12 +97,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             )
         }
         Operation::ConsultaV => {
-            assert!(key.len() >= 1, "Informe ao menos uma chave!");
+            assert!(!key.is_empty(), "Informe ao menos uma chave!");
             assert!(
-                ver.len() == 0 || ver.len() == key.len(),
+                ver.is_empty() || ver.len() == key.len(),
                 "Informe uma versão para cada chave ou não informe nenhuma!"
             );
-            let x: Vec<ChaveVersao> = if ver.len() == 0 {
+            let x: Vec<ChaveVersao> = if ver.is_empty() {
                 key.iter()
                     .map(|k| ChaveVersao {
                         chave: k.to_string(),
@@ -122,13 +122,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let mut stream = client.consulta_varias(request).await?.into_inner();
             let mut s = String::new();
             while let Some(tupla) = stream.message().await? {
-                s = s + format!("{:?}\n", tupla).as_str();
+                s += format!("{:?}\n", tupla).as_str();
             }
             s
         }
         Operation::InsereV => {
             assert!(
-                key.len() >= 1 && val.len() >= 1,
+                !key.is_empty() && !val.is_empty(),
                 "Informe ao menos uma chave e um valor!"
             );
             assert!(
@@ -147,17 +147,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let mut stream = client.insere_varias(request).await?.into_inner();
             let mut s = String::new();
             while let Some(e) = stream.message().await? {
-                s = s + format!("{:?}\n", e).as_str();
+                s += format!("{:?}\n", e).as_str();
             }
             s
         }
         Operation::RemoveV => {
-            assert!(key.len() >= 1, "Informe ao menos uma chave!");
+            assert!(!key.is_empty(), "Informe ao menos uma chave!");
             assert!(
-                ver.len() == 0 || ver.len() == key.len(),
+                ver.is_empty() || ver.len() == key.len(),
                 "Informe uma versão para cada chave ou não informe nenhuma!"
             );
-            let x: Vec<ChaveVersao> = if ver.len() == 0 {
+            let x: Vec<ChaveVersao> = if ver.is_empty() {
                 key.iter()
                     .map(|k| ChaveVersao {
                         chave: k.to_string(),
@@ -177,20 +177,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let mut stream = client.remove_varias(request).await?.into_inner();
             let mut s = String::new();
             while let Some(e) = stream.message().await? {
-                s = s + format!("{:?}\n", e).as_str();
+                s += format!("{:?}\n", e).as_str();
             }
             s
         }
         Operation::Snapshot => {
             assert!(ver.len() == 1, "Informe a versão!");
-            let v = ver.get(0).copied();
+            let v = ver.first().copied();
             let mut stream = client
                 .snapshot(Request::new(Versao { versao: v.unwrap() }))
                 .await?
                 .into_inner();
             let mut s = String::new();
             while let Some(tupla) = stream.message().await? {
-                s = s + format!("{:?}\n", tupla).as_str();
+                s += format!("{:?}\n", tupla).as_str();
             }
             s
         }
